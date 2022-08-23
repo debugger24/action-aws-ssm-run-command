@@ -1,0 +1,21 @@
+name: Test Workflow
+
+on: workflow_dispatch
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    name: Test Linux
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test Linux
+        id: test-linux
+        uses: ./
+        with:
+          aws-region: ap-south-1
+          instance-ids: i-06af009ec387bf5d9
+          commands: |
+            pwd
+            ls
+            echo "Executed by Github Actions Workflow #${{ github.run_id }}" >> test.txt
