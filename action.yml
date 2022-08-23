@@ -1,7 +1,11 @@
-name: "Github Action Template"
+name: "AWS SSM Run Command"
 author: "Rahul Kumar <rahulcomp24@gmail.com>"
 
 description: "Github Action Template with CI/CD"
+
+branding:
+  icon: "code"
+  color: "orange"
 
 inputs:
   sample_input_1:
