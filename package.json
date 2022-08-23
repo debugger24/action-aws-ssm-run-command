@@ -1,7 +1,7 @@
 {
-  "name": "github-action-template",
-  "version": "1.0.1",
-  "description": "Github Action Template",
+  "name": "action-aws-ssm-run-command",
+  "version": "0.1.0",
+  "description": "Github Action for running commands on Linux or Windows machine managed using SSM",
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.ts --license licenses.txt",
@@ -9,24 +9,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/debugger24/github-action-template.git"
+    "url": "git+https://github.com/debugger24/action-aws-ssm-run-command.git"
   },
   "keywords": [
-    "github",
     "action",
+    "aws",
+    "aws-ssm",
+    "github",
     "template",
     "typescript"
   ],
   "author": "debugger24",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/debugger24/github-action-template/issues"
+    "url": "https://github.com/debugger24/action-aws-ssm-run-command/issues"
   },
-  "homepage": "https://github.com/debugger24/github-action-template#readme",
+  "homepage": "https://github.com/debugger24/action-aws-ssm-run-command#readme",
   "dependencies": {
-    "@actions/core": "^1.9.1"
+    "@actions/core": "^1.9.1",
+    "@aws-sdk/client-ssm": "^3.154.0"
   },
   "devDependencies": {
+    "@types/node": "^18.7.11",
     "@vercel/ncc": "^0.34.0",
     "typescript": "^4.7.4"
   }

@@ -1,0 +1,35 @@
+name: Test Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_id_linux:
+        description: Instance ID to execute AWS SSM command
+        required: true
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    name: Test Linux
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${AWS_REGION}
+      - name: Test Linux
+        id: test-linux
+        uses: ./
+        with:
+          aws-region: ${AWS_REGION}
+          instance-ids: ${{ github.event.inputs.instance_id_linux }}
+          commands: |
+            pwd
+            ls
+            echo "Executed by Github Actions Workflow #${{ github.run_id }}" >> test.txt
