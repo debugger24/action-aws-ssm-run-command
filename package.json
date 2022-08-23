@@ -1,6 +1,6 @@
 {
   "name": "action-aws-ssm-run-command",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Github Action for running commands on Linux or Windows machine managed using SSM",
   "main": "dist/index.js",
   "scripts": {
