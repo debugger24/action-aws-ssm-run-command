@@ -3,6 +3,7 @@
 # Check if build output at dist is uptodate or not
 
 # Check files updated in working dir
+git diff
 git status dist -s
 
 # Raise error if more than 1 files changed in working dir
