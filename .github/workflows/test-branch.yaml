@@ -22,12 +22,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${AWS_REGION}
+          aws-region: ${{ env.AWS_REGION }}
       - name: Test Linux
         id: test-linux
         uses: ./
         with:
-          aws-region: ${AWS_REGION}
+          aws-region: ${{ env.AWS_REGION }}
           instance-ids: ${{ github.event.inputs.instance_id_linux }}
           commands: |
             pwd
