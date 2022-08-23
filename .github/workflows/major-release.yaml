@@ -1,0 +1,74 @@
+name: Update Major Release
+
+on:
+  release:
+    types:
+      - published
+
+  workflow_dispatch:
+    inputs:
+      TAG_NAME:
+        description: "Tag name that the major tag will point to"
+        required: true
+        type: string
+
+  workflow_call:
+    inputs:
+      TAG_NAME:
+        description: "Tag name that the major tag will point to"
+        required: true
+        type: string
+
+env:
+  TAG_NAME: ${{ github.event.release.tag_name || inputs.TAG_NAME }}
+
+jobs:
+  update_major_tag:
+    runs-on: ubuntu-latest
+    name: Update Major Tag
+    environment: major-release-update
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get major release version
+        id: get-major-version
+        run: |
+          echo "Tag name: ${TAG_NAME}"
+          major_version=${TAG_NAME%.*.*}
+          echo "Major Version: ${major_version}"
+          echo "::set-output name=major_version::$major_version"
+
+      - name: Check if major version exists
+        id: check-release
+        run: |
+          .github/scripts/check-release.sh \
+            ${{ github.repository }} \
+            ${{ steps.get-major-version.outputs.major_version }} \
+            ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Source Tag SHA
+        id: source-tag-sha
+        run: |
+          .github/scripts/source-tag-sha.sh \
+            ${{ github.repository }} \
+            ${TAG_NAME} \
+            ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Major Release
+        uses: softprops/action-gh-release@v1
+        if: steps.check-release.outputs.release_exists == 'false'
+        id: create_release
+        with:
+          name: ${{ steps.get-major-version.outputs.major_version }}
+          tag_name: ${{ steps.get-major-version.outputs.major_version }}
+          target_commitish: ${{ steps.source-tag-sha.outputs.sha }}
+
+      - name: Update Major tag
+        if: steps.check-release.outputs.release_exists == 'true'
+        run: |
+          .github/scripts/update-major-tag.sh \
+            ${{ github.repository }} \
+            ${{ steps.source-tag-sha.outputs.sha }} \
+            ${{ steps.get-major-version.outputs.major_version }} \
+            ${{ secrets.GITHUB_TOKEN }}

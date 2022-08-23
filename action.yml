@@ -1,0 +1,17 @@
+name: "Github Action Template"
+author: "Rahul Kumar <rahulcomp24@gmail.com>"
+
+description: "Github Action Template with CI/CD"
+
+inputs:
+  sample_input_1:
+    required: true
+    description: "Sample Input 1"
+  optional_sample_input_2:
+    required: false
+    description: "Optional Sample Input 2"
+    default: "default_value"
+
+runs:
+  using: "node12"
+  main: "dist/index.js"

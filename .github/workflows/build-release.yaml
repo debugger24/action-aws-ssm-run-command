@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - README.md
+      - CHANGELOG.md
+      - .gitignore
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build package
+        run: npm run build
+
+      - name: Verify build
+        run: .github/scripts/verify-build.sh
+
+  release-check:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Release Precheck
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get version
+        id: get-version
+        run: |
+          version=$(cat package.json | jq '.version' --raw-output)
+          echo "Version: v${version}"
+          echo "::set-output name=version::v${version}"
+
+      - name: Check if release exists
+        id: release-check
+        run: |
+          .github/scripts/check-release.sh \
+            ${{ github.repository }} \
+            ${{ steps.get-version.outputs.version }} \
+            ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display warning if release exists
+        if: steps.release-check.outputs.release_exists == 'true'
+        run: echo "::warning title=Skipping Release::Release ${release_version} already exists. If you want to create new release please update the version in package.json"
+
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release_exists: ${{ steps.release-check.outputs.release_exists }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: release-check
+    name: Release
+    if: needs.release-check.outputs.release_exists == 'false'
+    steps:
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ needs.release-check.outputs.version }}
+          tag_name: ${{ needs.release-check.outputs.version }}
+          generate_release_notes: true
+
+  major_version_update:
+    name: Major Release
+    needs: [release, release-check]
+    uses: ./.github/workflows/major-release.yaml
+    with:
+      TAG_NAME: ${{ needs.release-check.outputs.version }}

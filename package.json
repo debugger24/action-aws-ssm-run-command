@@ -1,0 +1,33 @@
+{
+  "name": "github-action-template",
+  "version": "1.0.1",
+  "description": "Github Action Template",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts --license licenses.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debugger24/github-action-template.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "template",
+    "typescript"
+  ],
+  "author": "debugger24",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/debugger24/github-action-template/issues"
+  },
+  "homepage": "https://github.com/debugger24/github-action-template#readme",
+  "dependencies": {
+    "@actions/core": "^1.9.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "typescript": "^4.7.4"
+  }
+}
